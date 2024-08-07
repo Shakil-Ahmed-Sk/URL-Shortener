@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('profile') }}">Profile</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>Dashboard</h1>
+        <div class="sorting">
+            <label for="sort">Sort By:</label>
+            <select id="sort">
+                <option value="click_count">Click Frequency</option>
+                <option value="unclicked">Unclicked</option>
+            </select>
+            <button id="apply-sort">Apply</button>
+        </div>
+        <table id="urlsTable">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Long URL</th>
+                    <th>Short URL</th>
+                    <th class="click-count">Click Count</th>
+                    <th>Referrers</th>
+                    <th class="timestamp">Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for long_url, short_url, title, click_count, referrers, timestamp in urls_with_analytics %}
+                    <tr>
+                        <td>{{ title or 'N/A' }}</td>
+                        <td>{{ long_url }}</td>
+                        <td><a href="http://127.0.0.1:5000/{{ short_url }}" target="_blank">127.0.0.1:5000/{{ short_url }}</a></td>
+                        <td class="click-count">{{ click_count }}</td>
+                        <td>{{ referrers | tojson }}</td>
+                        <td class="timestamp">{{ timestamp }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="{{ url_for('static', filename='scripts/dashboard.js') }}" defer></script>
+</body>
+</html>
